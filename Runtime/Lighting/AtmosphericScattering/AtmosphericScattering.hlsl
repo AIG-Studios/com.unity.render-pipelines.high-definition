@@ -14,6 +14,8 @@
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Debug/DebugDisplay.hlsl"
 #endif
 
+#include "Assets/VFX/Environment/Fog/GradientFog.hlsl"
+
 TEXTURE3D(_VBufferLighting);
 
 float3 ExpLerp(float3 A, float3 B, float t, float x, float y)
@@ -374,6 +376,10 @@ void EvaluateAtmosphericScattering(PositionInputs posInput, float3 V, out float3
         CompositeOver(color, opacity, skyColor, skyOpacity, color, opacity);
 #endif
     }
+
+    float4 gradientFog = SampleGradientFog(length(posInput.positionWS), posInput.positionWS.y + _WorldSpaceCameraPos.y, V, posInput.positionNDC);
+
+    CompositeOver(color, opacity, gradientFog.rgb, gradientFog.a, color, opacity);
 }
 
 
